@@ -42,18 +42,39 @@ eos
 #
 # http://guides.rubyonrails.org/association_basics.html
 class Link < ActiveRecord::Base
+    validates_presence_of :short_url, :long_url
+    #validates_format_of :short_url, :long_url, :with => /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ix
 end
 
 get '/' do
-    form
+  form
 end
 
 post '/new' do
-    # PUT CODE HERE TO CREATE NEW SHORTENED LINKS
+    surl = makeRandomString
+    link = Link.find_or_create_by_long_url(:long_url => params[:url], :short_url => surl)
+    link.save()
+    link.short_url #return the shortened url
+end
+
+get '/sites' do
+    Link.find(:all).map{|i| '<p>'+i.long_url + ' - ' + i.short_url+'</p>' }
 end
 
 get '/jquery.js' do
     send_file 'jquery.js'
+end
+
+get '*.*' do
+end
+
+get '/*' do
+  redirect Link.find_by_short_url(params[:splat].first).long_url
+end
+
+
+def makeRandomString 
+  (0...5).map{(65+rand(26)).chr}.join
 end
 
 ####################################################
