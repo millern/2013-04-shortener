@@ -22,6 +22,7 @@ form = <<-eos
     </form>
     <h2>Results:</h2>
     <h3 id="display"></h3>
+    <h3><a href="/sites">View Links</a></h3>
     <script src="jquery.js"></script>
 
     <script type="text/javascript">
