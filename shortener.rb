@@ -52,9 +52,10 @@ end
 
 post '/new' do
     surl = makeRandomString
+    puts "saving: " + surl
     link = Link.find_or_create_by_long_url(:long_url => params[:url], :short_url => surl)
     link.save()
-    link.short_url #return the shortened url
+    "localhost/" + link.short_url #return the shortened url
 end
 
 get '/sites' do
@@ -69,7 +70,13 @@ get '*.*' do
 end
 
 get '/*' do
-  redirect Link.find_by_short_url(params[:splat].first).long_url
+  temp = params[:splat].first
+  link = Link.find_by_short_url(temp)
+  if link
+    redirect 'http://'+link.long_url
+  else 
+    halt 404
+  end
 end
 
 
